@@ -10,9 +10,9 @@ const port = process.env.PORT || 5000;
 // middleware
 const corsOptions = {
   origin: [
-    'http://localhost:5173'
+    // 'http://localhost:5173'
 
-    //   'https://b9a11-fitness-client-2c51c.web.app',
+      'https://b9a12-tourist.web.app',
     //   'https://b9a11-fitness-client-2c51c.firebaseapp.com'
 
   ],
@@ -49,10 +49,26 @@ async function run() {
     app.post('/jwt', async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '1h'
+        expiresIn: '24h'
       });
       res.send({ token });
     })
+
+      // middlewares 
+      const verifyToken = (req, res, next) => {
+        console.log('inside verify token', req.headers.authorization);
+        if (!req.headers.authorization) {
+          return res.status(401).send({ message: 'unauthorized access' });
+        }
+        const token = req.headers.authorization.split(' ')[1];
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+          if (err) {
+            return res.status(401).send({ message: 'unauthorized access' })
+          }
+          req.decoded = decoded;
+          next();
+        })
+      }
 
 
     app.get("/package", async (req, res) => {
@@ -60,6 +76,16 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     })
+   
+// add packages  :--
+app.post('/package', async (req, res) => {
+  const newItem = req.body;
+  console.log(newItem);
+  const result = await packageCollection.insertOne(newItem);
+  res.send(result)
+})
+
+
     // wishlist (post) create:
     app.post('/wishlist', async (req, res) => {
       const wishlist = req.body;
@@ -73,7 +99,7 @@ async function run() {
       res.send(result)
     })
 // wishlist get :
-    app.get('/mywishlist/:email',async(req,res)=>{
+    app.get('/mywishlist/:email', async(req,res)=>{
 const result =await wishlistCollection.find().toArray();
 res.send(result)
     })
@@ -99,6 +125,12 @@ res.send(result)
       console.log(value);
       const result = await feedbackCollection.insertOne(value);
       res.send(result)
+    })
+// get feedback:--
+    app.get("/feedback", async (req, res) => {
+      const cursor = feedbackCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     })
 
 
@@ -270,7 +302,7 @@ app.patch('/user/admin/:id', async (req, res) => {
     })
     // get, my booking by email  :-> 
 
-    app.get('/myBook/:email', async (req, res) => {
+    app.get('/myBook/:email',  async (req, res) => {
       console.log(req.params.email);
       const result = await bookedCollection.find({touristEmail: req.params.email}).toArray();
       res.send(result)
