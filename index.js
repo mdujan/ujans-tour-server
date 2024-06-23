@@ -273,7 +273,18 @@ app.patch('/user/admin/:id', async (req, res) => {
 })
 
     // tour guide button:
-   
+    app.patch('/user/guide/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          role: 'tourGuide',
+          status: 'verified'
+        }
+      }
+      const result = await usersCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
 
 
 
