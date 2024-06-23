@@ -71,14 +71,12 @@ async function run() {
       }
 
 
+    app.get("/package", async (req, res) => {
+      const cursor = packageCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
    
-// add packages  :--
-app.post('/package', async (req, res) => {
-  const newItem = req.body;
-  console.log(newItem);
-  const result = await packageCollection.insertOne(newItem);
-  res.send(result)
-})
 
 
     // wishlist (post) create:
