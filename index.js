@@ -241,7 +241,23 @@ app.get('/detailsProfile/:id', async (req, res) => {
 
     
     // tour guide selection dropdown :
-
+    app.get('/tourGuide', async (req, res) => {
+      const result = await usersCollection.aggregate([
+        {
+          $match: {
+            role: 'tourGuide'
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            name: 1
+          }
+        }
+      ]).toArray()
+      console.log(result)
+      res.send(result)
+    })
 
 //do a user make admin ,button:
 app.patch('/user/admin/:id', async (req, res) => {
@@ -257,18 +273,7 @@ app.patch('/user/admin/:id', async (req, res) => {
 })
 
     // tour guide button:
-    app.patch('/user/guide/:id', async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const updatedDoc = {
-        $set: {
-          role: 'tourGuide',
-          status: 'verified'
-        }
-      }
-      const result = await usersCollection.updateOne(filter, updatedDoc);
-      res.send(result);
-    })
+   
 
 
 
