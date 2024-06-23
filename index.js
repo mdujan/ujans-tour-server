@@ -77,20 +77,19 @@ async function run() {
       res.send(result);
     })
    
+// add packages  :--
+app.post('/package', async (req, res) => {
+  const newItem = req.body;
+  console.log(newItem);
+  const result = await packageCollection.insertOne(newItem);
+  res.send(result)
+})
 
 
-    // wishlist (post) create:
-    app.post('/wishlist', async (req, res) => {
-      const wishlist = req.body;
-      const touristEmail=wishlist.touristEmail
-      const tourId=wishlist.tourId
-      const isExist = await wishlistCollection.findOne({touristEmail,tourId})
-      if(isExist){
-        return res.send({message:"already exist",insertedId:null})
-      }
-      const result = await wishlistCollection.insertOne(wishlist);
-      res.send(result)
-    })
+  
+
+
+
 // wishlist get :
     app.get('/mywishlist/:email', async(req,res)=>{
 const result =await wishlistCollection.find().toArray();
