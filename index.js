@@ -98,8 +98,7 @@ app.post('/package', async (req, res) => {
       const result = await wishlistCollection.insertOne(wishlist);
       res.send(result)
     })
-
-    
+   
 // wishlist get :
     app.get('/mywishlist/:email', async(req,res)=>{
 const result =await wishlistCollection.find().toArray();
@@ -242,23 +241,7 @@ app.get('/detailsProfile/:id', async (req, res) => {
 
     
     // tour guide selection dropdown :
-    app.get('/tourGuide', async (req, res) => {
-      const result = await usersCollection.aggregate([
-        {
-          $match: {
-            role: 'tourGuide'
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            name: 1
-          }
-        }
-      ]).toArray()
-      console.log(result)
-      res.send(result)
-    })
+
 
 //do a user make admin ,button:
 app.patch('/user/admin/:id', async (req, res) => {
